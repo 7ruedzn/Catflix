@@ -6,6 +6,14 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.json.JSONException;
+
+import com.google.gson.JsonSyntaxException;
+
+import Dados.Filme;
+import Dados.Tmdb;
+
 import javax.swing.JLabel;
 import java.awt.GridLayout;
 import javax.swing.JTextField;
@@ -13,6 +21,9 @@ import java.awt.CardLayout;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class TelaPrincipal extends JFrame {
@@ -38,8 +49,11 @@ public class TelaPrincipal extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws JSONException 
+	 * @throws IOException 
+	 * @throws JsonSyntaxException 
 	 */
-	public TelaPrincipal() {
+	public TelaPrincipal() throws JsonSyntaxException, IOException, JSONException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1100, 574);
 		contentPane = new JPanel();
@@ -57,10 +71,32 @@ public class TelaPrincipal extends JFrame {
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
+		//Cria a lista de filmes;
+		ArrayList<Filme> listaFilmes = Tmdb.getMovieList();
+		//Cria o arquivo que vai armazenar os estados da classe filme;
+		Tmdb.saveMovieStateFile("MoviesState.txt", listaFilmes);
+		
 		JButton btnNewButton = new JButton("Pesquisar");
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(Tmdb.searchMovie(textField.getText(), listaFilmes) == true) {
+					Filme filme = new Filme();
+					for(int i = 0; i < listaFilmes.size(); i++) {
+						if(listaFilmes.get(i).getTitle().equals(textField.getText())) {
+							filme = listaFilmes.get(i);
+						}
+					}
+					try {
+						new TelaDadosFilme(filme, listaFilmes).setVisible(true);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					dispose();
+				}
+				
 			}
 		});
 		btnNewButton.setBounds(427, 302, 152, 39);

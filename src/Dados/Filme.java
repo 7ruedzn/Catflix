@@ -1,9 +1,10 @@
 package Dados;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Filme {
+public class Filme implements Serializable{
 	private String title;
 	private String overview;
     private List<Filme> genres;
@@ -13,13 +14,14 @@ public class Filme {
     private String vote_average;
     private String release_date;
     private List<Filme> results;
+    private String poster_path;
     
     public Filme() {
-    	
+    	this.reviews = new ArrayList<String>();
     }
     
     public Filme(String title, String overview, List<Filme> genres, int id, String name, ArrayList<String> reviews,
-			String vote_average, String release_date, List<Filme> results) {
+			String vote_average, String release_date, List<Filme> results, String poster_path) {
 		super();
 		this.title = title;
 		this.overview = overview;
@@ -30,9 +32,26 @@ public class Filme {
 		this.vote_average = vote_average;
 		this.release_date = release_date;	
 		this.results = results;
+		this.poster_path = poster_path;
 	}
     
-    public List<Filme> getResults() {
+    public String getImage() {
+    	return "https://image.tmdb.org/t/p/w300"+this.poster_path;
+    }
+    
+    public void addReview(String review) {
+    	this.reviews.add(review);
+    }
+    
+    public String getPoster_path() {
+		return poster_path;
+	}
+
+	public void setPoster_path(String poster_path) {
+		this.poster_path = poster_path;
+	}
+
+	public List<Filme> getResults() {
 		return results;
 	}
 
@@ -104,19 +123,44 @@ public class Filme {
     public void setReviews(ArrayList<String> reviews) {
         this.reviews = reviews;
     }
+    
+    public String returnReviews() {
+    	String review = "";
+    	for(int i = 0; i < this.reviews.size(); i++) {
+    		review += "Review["+i+"]: "+this.reviews.get(i);
+    	}
+    	return review;
+    }
 
-    @Override
     public String toString() {
         return 
         		"\nnome:" + this.title 
         		+ "\nsinopse: "+this.overview 
-        		/*
-        		 * + "\ngeneros: "+this.genres arrumar para conseguir pegar os generos, 
-        		 * apesar de passar do JSON ter apenas o id;
-        		 */
+        		//+ "\ngeneros: "+this.genres //arrumar para conseguir pegar os generos, 
+        		//apesar de passar do JSON ter apenas o id;
         		+"\nid: "+this.id
         		+"\nnota: "+this.vote_average
+        		+"\nPoster: "+this.poster_path
+        		+"\nReviews: "+this.returnReviews()
         		+"\nData de lançamento: "+this.release_date;
     }
+    
+    //Tentando colocar em arquivo os dados do filme;
+    /*
+    public String toString() {
+    	StringBuffer b = new StringBuffer();
+    	b.append(this.title);
+    	b.append("\n");
+    	b.append("\n");
+    	b.append(this.reviews);
+    	b.append("\n");
+    	b.append("\n");
+    	b.append(this.vote_average);
+    	b.append("\n");
+    	b.append("\n");
+    	
+    	return b.toString();
+    	
+    }*/
 }
 

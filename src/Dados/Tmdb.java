@@ -22,12 +22,14 @@ public class Tmdb {
 	
 	//JSON com pagina 1 de filmes;
 	//Pega informação de um filme passando Id e tipo do filme;
+	//tentar salvar os reviews no arquivo;
 	
-	/*Fazer ->
-	 * Lista com todos os filmes da página do JSON;
-	 * Procurar filme passando nome dele, caso encontrado mostrar os dados do filme;
-	 * 
-	 */
+	/*
+		Este arquivo contém a maioria dos métodos usados para pegar os dados dos filmes e também para realizar teste;
+		Os titulos dos filmes estão em ingles e devem ser escritos da MESMA MANEIRA como ele está escrito no Tmdb.
+		Ex: The Godfather -> encontra / The godfather -> não encontra
+	*/
+	
 
 	public static void main(String[] args) throws Exception, JsonParseException, com.fasterxml.jackson.core.JsonParseException{
 		String API_KEY = "67c58c93f9c117b5d318aefade12d87f";
@@ -48,40 +50,34 @@ public class Tmdb {
 		}
 		in.close();
 		
-		//Adicionando alguns filmes aleatórios na lista de filmes
-		//Precisa automatizar criando todos os objetos a partir do JSON lido;
-		//Gson gson = new Gson();
-		//ListaFilmes listaFilmes = gson.fromJson(json, ListaFilmes.class);
-		//List<Filme> list = listaFilmes.getMovieList();
+		ListaFilmes lista = new ListaFilmes();
+		lista.setMovieList(getMovieList());
 		
-		Filme filme2 = getMovieInfo("402", "movie");
-		Filme filme3 = getMovieInfo("403", "movie");
-		Filme filme4 = getMovieInfo("550", "movie");
-		
-		//Printa os dados de um filme;
-		System.out.println("Filme 2: "+filme2.toString());
-		
+		//Printa uma lista de filmes instanciados;
+		System.out.println("\n----------Lista de Filmes-------------\n");
 		ArrayList<Filme> listaFilmes = getMovieList();
 		for(int i = 0; i < listaFilmes.size(); i++) {
-			System.out.println("listFilmes["+i+"]= "+listaFilmes.get(i));
+			System.out.println("listFilmes["+i+"]= "+listaFilmes.get(i).toString());
 			System.out.println();
 		}
 		
-		//Função de procurar filme que retorna 'true or false' caso encontre ou não o filme;
 		
+		//Printa os dados de um filme específico;
+		System.out.println("\n------- Procurando filme específico ------");
+		System.out.println("getMovieInfo: "+getMovieInfo("movie", listaFilmes.get(0)).toString());
+		
+		//Função de procurar filme que retorna 'true or false' caso encontre ou não o filme;
 		System.out.println("\n------- Procurando filme ------");
-		if(searchMovie("The Dark Knight", listaFilmes) == true) {
+		if(searchMovie("The Godfather", listaFilmes) == true) {
 			System.out.println("Filme encontrado!");
 		}else {
 			System.out.println("Filme não encontrado!");
 		}
 		
-		System.out.println("\n----------Lista de Filmes-------------");
-		
 		
 	}
 	
-	public static Filme getMovieInfo(String movieId, String type) throws JsonSyntaxException, IOException {
+	public static Filme getMovieInfo(String type, Filme filmao) throws JsonSyntaxException, IOException {
 		String API_KEY = "67c58c93f9c117b5d318aefade12d87f";
 		String API_BASE = "https://api.themoviedb.org/3";
 		Filme filme = new Filme();
@@ -90,7 +86,7 @@ public class Tmdb {
 		
 		switch(type) {
 		case "movie":
-			String url_movie = "/movie/"+movieId+"?&api_key="+API_KEY;
+			String url_movie = "/movie/"+filmao.getId()+"?&api_key="+API_KEY;
 			URL url = new URL(API_BASE+url_movie);
 			URLConnection yc = url.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
@@ -103,6 +99,30 @@ public class Tmdb {
 			break;
 		}
 		return filme;
+	}
+	
+	public static void saveMovieStateFile(String filename, ArrayList<Filme> movieList) throws IOException {
+		ObjectOutputStream outStream = null;
+		
+		try {
+			outStream = new ObjectOutputStream(new FileOutputStream(filename));
+			for(int i = 0; i < movieList.size(); i++) {
+				outStream.writeObject(movieList.get(i).toString());
+			}
+		}catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(outStream != null) {
+					outStream.flush();
+					outStream.close();
+				}
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static ArrayList<Filme> getMovieList() throws JsonSyntaxException, IOException, JSONException {

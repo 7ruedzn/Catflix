@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListaFilmes {
-	private List<Filme> movieList;
+	private ArrayList<Filme> movieList;
+	
+	ListaFilmes(){
+		this.movieList = new ArrayList<Filme>();
+	}
 
-	public List<Filme> getMovieList() {
+	public ArrayList<Filme> getMovieList() {
 		return movieList;
 	}
 
-	public void setMovieList(List<Filme> movieList) {
+	public void setMovieList(ArrayList<Filme> movieList) {
 		this.movieList = movieList;
 	}
 
