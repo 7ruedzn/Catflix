@@ -6,14 +6,28 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Dados.Filme;
+import Dados.ListaFilmes;
+import Dados.Tmdb;
+import Dados.Usuario;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import java.awt.Font;
+import java.awt.HeadlessException;
 
 public class TelaLogin extends JFrame {
 
@@ -26,11 +40,11 @@ public class TelaLogin extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(ListaFilmes movieList, Tmdb tmdb) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaLogin frame = new TelaLogin();
+					TelaLogin frame = new TelaLogin(movieList, tmdb);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,7 +56,7 @@ public class TelaLogin extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaLogin() {
+	public TelaLogin(ListaFilmes movieList, Tmdb tmdb) {
 		getContentPane().setLayout(null);
 		
 		txt2 = new JTextField();
@@ -79,10 +93,22 @@ public class TelaLogin extends JFrame {
 		btnLogar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//Realizar o cast para String quando utilizar Password;
-				if(checkLogin(txtLogin.getText(), new String(txtPassword.getPassword()))) {
-					JOptionPane.showMessageDialog(null, "Logado com sucesso!");
-				}else {
-					JOptionPane.showMessageDialog(null, "Falha ao logar", "ERRO AO LOGAR", JOptionPane.ERROR_MESSAGE);
+				try {
+					if(checkLogin(txtLogin.getText(), new String(txtPassword.getPassword()))) {
+						Usuario user = new Usuario(txtLogin.getText(), new String(txtPassword.getPassword()));
+						createUserTxts(user);
+						new TelaPrincipal(movieList, user, tmdb).setVisible(true);
+						JOptionPane.showMessageDialog(null, "Logado com sucesso!");
+						dispose();
+					}else {
+						JOptionPane.showMessageDialog(null, "Falha ao logar", "ERRO AO LOGAR", JOptionPane.ERROR_MESSAGE);
+					}
+				} catch (HeadlessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		});
@@ -113,13 +139,79 @@ public class TelaLogin extends JFrame {
 		contentPane.add(lblNewLabel_2);
 	}
 	
-	public boolean checkLogin(String login, String senha) {
+	public boolean checkLogin(String login, String senha) throws IOException {
 		boolean result = false;
-		if(login.equals("user") && senha.equals("123")) {
-			result = true;
-			return result;
-		}else {
-			return result;
+		String filename = "users.txt";
+		FileInputStream in = new FileInputStream(filename);
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		String strLine;
+		int val = 0;
+		
+		while((strLine = br.readLine()) != null ){
+			String[] split = strLine.split("\\s");
+				if(login.equals(split[0]) && senha.equals(split[1])) {
+					result = true;
+				}
 		}
+		return result;
 	}
+	
+	public void createUserTxts(Usuario user) {
+		//txt de reviews
+			try {
+				String filename = user.getLogin() + " Reviews.txt";
+				File file = new File(filename);
+				file.createNewFile();
+	    		System.out.println(filename);
+	    		FileInputStream in = new FileInputStream(filename);
+	    		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	    		String strLine;
+	    		
+	    		while((strLine = br.readLine()) != null ){
+	    				user.addReview(strLine);
+	    		}
+	    	}catch(Exception e) {
+	    		e.printStackTrace();
+	    	}
+			
+			//cria o txt de interesse
+			
+			try {
+				String filename = user.getLogin() + " ListaInteresses.txt";
+				File file = new File(filename);
+				file.createNewFile();
+	    		System.out.println(filename);
+	    		FileInputStream in = new FileInputStream(filename);
+	    		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	    		String strLine;
+	    		
+	    		while((strLine = br.readLine()) != null ){
+	    				user.addIntereses(strLine);
+	    		}
+	    	}catch(Exception e) {
+	    		e.printStackTrace();
+	    	}
+			
+			//Adicionar Lista Assistidos
+			
+			
+			try {
+				String filename = user.getLogin() + " ListaAssistidos.txt";
+				File file = new File(filename);
+				file.createNewFile();
+	    		System.out.println(filename);
+	    		FileInputStream in = new FileInputStream(filename);
+	    		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	    		String strLine;
+	    		
+	    		while((strLine = br.readLine()) != null ){
+	    				user.addAssistidos(strLine);
+	    		}
+	    	}catch(Exception e) {
+	    		e.printStackTrace();
+	    	}
+			
+			
+	}
+	
 }

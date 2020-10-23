@@ -1,15 +1,26 @@
 package Dados;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Filme implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String title;
 	private String overview;
-    private List<Filme> genres;
     private int id;
-    private String name;
     private ArrayList<String> reviews;
     private String vote_average;
     private String release_date;
@@ -18,22 +29,54 @@ public class Filme implements Serializable{
     
     public Filme() {
     	this.reviews = new ArrayList<String>();
+    	loadMovieReviews();
     }
     
-    public Filme(String title, String overview, List<Filme> genres, int id, String name, ArrayList<String> reviews,
+    public Filme(String title, String overview, int id, ArrayList<String> reviews,
 			String vote_average, String release_date, List<Filme> results, String poster_path) {
 		super();
 		this.title = title;
 		this.overview = overview;
-		this.genres = genres;
 		this.id = id;
-		this.name = name;
 		this.reviews = reviews;
 		this.vote_average = vote_average;
 		this.release_date = release_date;	
 		this.results = results;
 		this.poster_path = poster_path;
 	}
+    
+    public void saveReviewsTxt(String txtName, String review) {
+		File file = new File(txtName);
+		String reviews = "";
+		String conteudo;
+		
+		try {
+			FileWriter fw = new FileWriter(file, true);
+				reviews = review;
+				conteudo = reviews;
+				conteudo += "\r\n";
+				fw.write(conteudo);
+				fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+    
+    public void loadMovieReviews() {
+    	try {
+    		String filename = this.getTitle() + " Reviews.txt";
+    		FileInputStream in = new FileInputStream(filename);
+    		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    		String strLine;
+    		
+    		while((strLine = br.readLine()) != null ){
+    				this.reviews.add(strLine);
+    		}
+    	}catch(Exception e) {
+    		
+    	}
+    }
     
     public String getImage() {
     	return "https://image.tmdb.org/t/p/w300"+this.poster_path;
@@ -87,14 +130,6 @@ public class Filme implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -107,15 +142,6 @@ public class Filme implements Serializable{
 		this.overview = overview;
 	}
 
-
-	public void setGenres(List<Filme> genres) {
-		this.genres = genres;
-	}
-	
-	public List<Filme> getGenres() {
-		return this.genres;
-	}
-
 	public ArrayList<String> getReviews() {
         return reviews;
     }
@@ -123,44 +149,16 @@ public class Filme implements Serializable{
     public void setReviews(ArrayList<String> reviews) {
         this.reviews = reviews;
     }
-    
-    public String returnReviews() {
-    	String review = "";
-    	for(int i = 0; i < this.reviews.size(); i++) {
-    		review += "Review["+i+"]: "+this.reviews.get(i);
-    	}
-    	return review;
-    }
 
     public String toString() {
         return 
-        		"\nnome:" + this.title 
+        		"nome:" + this.title 
         		+ "\nsinopse: "+this.overview 
-        		//+ "\ngeneros: "+this.genres //arrumar para conseguir pegar os generos, 
-        		//apesar de passar do JSON ter apenas o id;
         		+"\nid: "+this.id
         		+"\nnota: "+this.vote_average
         		+"\nPoster: "+this.poster_path
-        		+"\nReviews: "+this.returnReviews()
-        		+"\nData de lançamento: "+this.release_date;
+        		+"\nReviews: "+this.reviews
+        		+"\nData de lancamento: "+this.release_date;
     }
     
-    //Tentando colocar em arquivo os dados do filme;
-    /*
-    public String toString() {
-    	StringBuffer b = new StringBuffer();
-    	b.append(this.title);
-    	b.append("\n");
-    	b.append("\n");
-    	b.append(this.reviews);
-    	b.append("\n");
-    	b.append("\n");
-    	b.append(this.vote_average);
-    	b.append("\n");
-    	b.append("\n");
-    	
-    	return b.toString();
-    	
-    }*/
 }
-

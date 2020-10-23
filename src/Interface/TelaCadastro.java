@@ -6,10 +6,17 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Dados.ListaFilmes;
+import Dados.Tmdb;
+import Dados.Usuario;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class TelaCadastro extends JFrame {
 
@@ -20,11 +27,11 @@ public class TelaCadastro extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(ListaFilmes movieList, Tmdb tmdb) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaCadastro frame = new TelaCadastro();
+					TelaCadastro frame = new TelaCadastro(movieList, tmdb);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,7 +43,7 @@ public class TelaCadastro extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaCadastro() {
+	public TelaCadastro(ListaFilmes movieList, Tmdb tmdb) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1125, 714);
 		contentPane = new JPanel();
@@ -72,7 +79,25 @@ public class TelaCadastro extends JFrame {
 		//Button Cadastrar
 		
 		JButton btnNewButton = new JButton("Cadastrar-se");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Usuario user = new Usuario(txtLogin.getText(), txtSenha.getText());
+				user.cadastrar();
+				new TelaLogin(movieList, tmdb).setVisible(true);
+				dispose();
+			}
+		});
 		btnNewButton.setBounds(387, 406, 217, 34);
 		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Ja sou cadastrado");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new TelaLogin(movieList, tmdb).setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton_1.setBounds(426, 451, 144, 23);
+		contentPane.add(btnNewButton_1);
 	}
 }

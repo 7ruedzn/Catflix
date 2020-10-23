@@ -19,65 +19,61 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Tmdb {
+	private String API_KEY;
+	private String API_BASE;
+	private String API_MOVIE;
 	
-	//JSON com pagina 1 de filmes;
-	//Pega informação de um filme passando Id e tipo do filme;
-	//tentar salvar os reviews no arquivo;
+	public Tmdb(){
+		this.API_KEY = "67c58c93f9c117b5d318aefade12d87f";
+		this.API_BASE = "https://api.themoviedb.org/3";
+		this.API_MOVIE = "/movie/top_rated?api_key=";
+	}
 	
-	/*
-		Este arquivo contém a maioria dos métodos usados para pegar os dados dos filmes e também para realizar teste;
-		Os titulos dos filmes estão em ingles e devem ser escritos da MESMA MANEIRA como ele está escrito no Tmdb.
-		Ex: The Godfather -> encontra / The godfather -> não encontra
-	*/
-	
+	public String getAPI_KEY() {
+		return API_KEY;
+	}
 
-	public static void main(String[] args) throws Exception, JsonParseException, com.fasterxml.jackson.core.JsonParseException{
-		String API_KEY = "67c58c93f9c117b5d318aefade12d87f";
-	    String API_BASE = "https://api.themoviedb.org/3";
-	    String API_MOVIE = "/movie/top_rated?api_key=";
-	    ArrayList<Filme> filmes = new ArrayList<Filme>();
-		URL url = new URL(API_BASE+API_MOVIE+API_KEY);
+
+	public void setAPI_KEY(String aPI_KEY) {
+		API_KEY = aPI_KEY;
+	}
+
+
+	public String getAPI_BASE() {
+		return API_BASE;
+	}
+
+
+	public void setAPI_BASE(String aPI_BASE) {
+		API_BASE = aPI_BASE;
+	}
+
+
+	public String getAPI_MOVIE() {
+		return API_MOVIE;
+	}
+
+
+	public void setAPI_MOVIE(String aPI_MOVIE) {
+		API_MOVIE = aPI_MOVIE;
+	}
+
+
+	public String getJSON() throws Exception, JsonParseException, com.fasterxml.jackson.core.JsonParseException{
+		URL url = new URL(this.API_BASE+this.API_MOVIE+this.API_KEY);
 		URLConnection connection = url.openConnection();
 		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String json;
 
-		
 		//printa o JSON com o resultado de todos os filmes da pagina 1;
 		while ((json = in.readLine()) != null ) {
-			Filme filme = new Gson().fromJson(json, Filme.class);
-			filmes.add(filme);
 			System.out.println(json);
 		}
 		in.close();
-		
-		ListaFilmes lista = new ListaFilmes();
-		lista.setMovieList(getMovieList());
-		
-		//Printa uma lista de filmes instanciados;
-		System.out.println("\n----------Lista de Filmes-------------\n");
-		ArrayList<Filme> listaFilmes = getMovieList();
-		for(int i = 0; i < listaFilmes.size(); i++) {
-			System.out.println("listFilmes["+i+"]= "+listaFilmes.get(i).toString());
-			System.out.println();
-		}
-		
-		
-		//Printa os dados de um filme específico;
-		System.out.println("\n------- Procurando filme específico ------");
-		System.out.println("getMovieInfo: "+getMovieInfo("movie", listaFilmes.get(0)).toString());
-		
-		//Função de procurar filme que retorna 'true or false' caso encontre ou não o filme;
-		System.out.println("\n------- Procurando filme ------");
-		if(searchMovie("The Godfather", listaFilmes) == true) {
-			System.out.println("Filme encontrado!");
-		}else {
-			System.out.println("Filme não encontrado!");
-		}
-		
-		
+		return json;
 	}
 	
-	public static Filme getMovieInfo(String type, Filme filmao) throws JsonSyntaxException, IOException {
+	public Filme getMovieInfo(String type, Filme movie) throws JsonSyntaxException, IOException {
 		String API_KEY = "67c58c93f9c117b5d318aefade12d87f";
 		String API_BASE = "https://api.themoviedb.org/3";
 		Filme filme = new Filme();
@@ -86,7 +82,7 @@ public class Tmdb {
 		
 		switch(type) {
 		case "movie":
-			String url_movie = "/movie/"+filmao.getId()+"?&api_key="+API_KEY;
+			String url_movie = "/movie/"+movie.getId()+"?&api_key="+API_KEY;
 			URL url = new URL(API_BASE+url_movie);
 			URLConnection yc = url.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
@@ -100,32 +96,9 @@ public class Tmdb {
 		}
 		return filme;
 	}
-	
-	public static void saveMovieStateFile(String filename, ArrayList<Filme> movieList) throws IOException {
-		ObjectOutputStream outStream = null;
-		
-		try {
-			outStream = new ObjectOutputStream(new FileOutputStream(filename));
-			for(int i = 0; i < movieList.size(); i++) {
-				outStream.writeObject(movieList.get(i).toString());
-			}
-		}catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}catch(IOException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				if(outStream != null) {
-					outStream.flush();
-					outStream.close();
-				}
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public static ArrayList<Filme> getMovieList() throws JsonSyntaxException, IOException, JSONException {
+
+	//Retorna uma lista de filmes a partir da url do tmdb;
+	public ArrayList<Filme> getMovieList() throws JsonSyntaxException, IOException, JSONException {
 		String API_KEY = "67c58c93f9c117b5d318aefade12d87f";
 	    String API_BASE = "https://api.themoviedb.org/3";
 	    String API_MOVIE = "/movie/top_rated?api_key=";
@@ -135,26 +108,32 @@ public class Tmdb {
 		BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
 		String inputLine;
 		String dados = "";
+		//le o JSON e armazena tudo dentro de 'dados';
 		while ((inputLine = in.readLine()) != null ) {
 			dados += inputLine;
 		}
 		
+		//obj recebe os dados do JSON lido acima;
 		JSONObject obj = null;
 		obj = new JSONObject(dados.toString());
+		//Acessa o array "results" dentro de 'obj';
 		JSONArray jArray = obj.getJSONArray("results");
 		for(int i = 0; i < jArray.length(); i++) {
 			JSONObject o = jArray.getJSONObject(i);
+			//instancia um filme para cada elemento encontrado dentro de "results";
 			Filme filme1 = new Gson().fromJson(o.toString(), Filme.class);
+			//adiciona a uma lista de filmes e depois retorna ela;
 			movieList.add(filme1);
 		}
 		return movieList;
 	}
 	
-	public static boolean searchMovie(String nome, ArrayList<Filme> movieList) {
+	//retorna true caso encontre o nome do filme dentro da lista de filmes;
+	public boolean searchMovie(String nome, ListaFilmes movieList) {
 		boolean res = false;
-		for(int i = 0; i < movieList.size(); i++) {
-			if(nome.equals(movieList.get(i).getTitle())) {
-				System.out.println(movieList.get(i).toString());
+		for(int i = 0; i < movieList.getMovieList().size(); i++) {
+			if(nome.equals(movieList.getMovieList().get(i).getTitle())) {
+				System.out.println(movieList.getMovieList().get(i).toString());
 				res = true;
 			}
 		}

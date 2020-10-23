@@ -11,34 +11,27 @@ import org.json.JSONException;
 
 import com.google.gson.JsonSyntaxException;
 
-import Dados.Filme;
+import Dados.ListaFilmes;
 import Dados.Tmdb;
+import Dados.Usuario;
 
-import javax.swing.JLabel;
-import java.awt.GridLayout;
-import javax.swing.JTextField;
-import java.awt.CardLayout;
-import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class TelaPrincipal extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void principal(ListaFilmes movieList, Usuario user, Tmdb tmdb) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaPrincipal frame = new TelaPrincipal();
+					TelaPrincipal frame = new TelaPrincipal(movieList, user, tmdb);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -46,60 +39,53 @@ public class TelaPrincipal extends JFrame {
 			}
 		});
 	}
-
-	/**
-	 * Create the frame.
-	 * @throws JSONException 
-	 * @throws IOException 
-	 * @throws JsonSyntaxException 
-	 */
-	public TelaPrincipal() throws JsonSyntaxException, IOException, JSONException {
+	
+	public TelaPrincipal(ListaFilmes movieList, Usuario user, Tmdb tmdb) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1100, 574);
+		setBounds(100, 100, 1076, 537);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Pesquisar Filme");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 35));
-		lblNewLabel.setBounds(377, 140, 239, 75);
-		contentPane.add(lblNewLabel);
-		
-		textField = new JTextField();
-		textField.setBounds(321, 225, 375, 51);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		//Cria a lista de filmes;
-		ArrayList<Filme> listaFilmes = Tmdb.getMovieList();
-		//Cria o arquivo que vai armazenar os estados da classe filme;
-		Tmdb.saveMovieStateFile("MoviesState.txt", listaFilmes);
-		
-		JButton btnNewButton = new JButton("Pesquisar");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		
+		JButton btnNewButton = new JButton("Sobre Desenvolvedores");
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(Tmdb.searchMovie(textField.getText(), listaFilmes) == true) {
-					Filme filme = new Filme();
-					for(int i = 0; i < listaFilmes.size(); i++) {
-						if(listaFilmes.get(i).getTitle().equals(textField.getText())) {
-							filme = listaFilmes.get(i);
-						}
-					}
-					try {
-						new TelaDadosFilme(filme, listaFilmes).setVisible(true);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					dispose();
-				}
+			public void actionPerformed(ActionEvent e) {
 				
 			}
 		});
-		btnNewButton.setBounds(427, 302, 152, 39);
+		btnNewButton.setBounds(111, 321, 184, 69);
 		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Pesquisar Filme");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					new TelaPesquisa(movieList, user, tmdb).setVisible(true);
+				} catch (JsonSyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				dispose();
+			}
+		});
+		btnNewButton_1.setBounds(333, 321, 328, 69);
+		contentPane.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("Ver lista de Interesses, filmes assistidos");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new TelaAssistidosInteresses(user).setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton_2.setBounds(700, 321, 271, 69);
+		contentPane.add(btnNewButton_2);
 	}
 }

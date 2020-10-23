@@ -11,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 
 import Dados.Filme;
 import Dados.ListaFilmes;
+import Dados.Tmdb;
+import Dados.Usuario;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -33,11 +36,11 @@ public class TelaDadosFilme extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void NewScreen(Filme filme, ArrayList<Filme> movieList) {
+	public static void NewScreen(Filme filme, ListaFilmes movieList, Usuario user) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaDadosFilme frame = new TelaDadosFilme(filme, movieList);
+					final TelaDadosFilme frame = new TelaDadosFilme(filme, movieList, user);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -50,7 +53,7 @@ public class TelaDadosFilme extends JFrame {
 	 * Create the frame.
 	 * @throws IOException 
 	 */
-	public TelaDadosFilme(Filme filme, ArrayList<Filme> movieList) throws IOException {
+	public TelaDadosFilme(Filme filme, ListaFilmes movieList, Usuario user) throws IOException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1006, 649);
 		container = new JPanel();
@@ -113,14 +116,40 @@ public class TelaDadosFilme extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				filme.addReview(textField.getText());
-				System.out.println("Dados do filme +"+filme.toString());
+				filme.saveReviewsTxt(filme.getTitle()+" Reviews.txt", textField.getText());
+				user.addReview(textField.getText());
+				user.saveUserReviewTxt(user.getLogin()+" Reviews.txt", textField.getText());
+				//System.out.println("Dados do filme +"+filme.toString());
+				getContentPane().repaint();
 			}
 		});
+		
 		btnNewButton.setBounds(378, 547, 164, 23);
 		container.add(btnNewButton);
 		
 		JLabel lblNewLabel_8 = new JLabel(filme.getReviews().toString());
-		lblNewLabel_8.setBounds(10, 307, 970, 102);
+		lblNewLabel_8.setBounds(10, 301, 577, 102);
 		container.add(lblNewLabel_8);
+		
+		JButton buttonAssistidos = new JButton("Adicionar Lista Assistidos");
+		buttonAssistidos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				user.addAssistidos(filme.getTitle());
+				user.saveUserAssistidosTxt(user.getLogin()+" ListaAssistidos.txt", filme.getTitle());
+				//System.out.println(user.getLista_assistidos());
+			}
+		});
+		buttonAssistidos.setBounds(597, 380, 164, 23);
+		container.add(buttonAssistidos);
+		
+		JButton buttonInteresses = new JButton("Adicionar a Lista de Interesses");
+		buttonInteresses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				user.addIntereses(filme.getTitle());
+				user.saveUserInteressesTxt(user.getLogin()+" ListaInteresses.txt", filme.getTitle());
+			}
+		});
+		buttonInteresses.setBounds(784, 380, 179, 23);
+		container.add(buttonInteresses);
 	}
 }
