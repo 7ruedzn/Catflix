@@ -58,7 +58,6 @@ public class Tmdb {
 		API_MOVIE = aPI_MOVIE;
 	}
 
-
 	public String getJSON() throws Exception, JsonParseException, com.fasterxml.jackson.core.JsonParseException{
 		URL url = new URL(this.API_BASE+this.API_MOVIE+this.API_KEY);
 		URLConnection connection = url.openConnection();

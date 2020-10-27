@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import java.awt.Font;
 import java.awt.HeadlessException;
+import java.awt.Color;
 
 public class TelaLogin extends JFrame {
 
@@ -81,8 +82,9 @@ public class TelaLogin extends JFrame {
 		lblNewLabel_1.setBounds(109, 118, 46, 14);
 		getContentPane().add(lblNewLabel_1);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 1049, 559);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(128, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -113,29 +115,34 @@ public class TelaLogin extends JFrame {
 			}
 		});
 		
-		btnLogar.setBounds(171, 210, 89, 23);
+		btnLogar.setBounds(415, 427, 89, 23);
 		contentPane.add(btnLogar);
 		
 		txtLogin = new JTextField();
-		txtLogin.setBounds(129, 103, 177, 20);
+		txtLogin.setBounds(352, 213, 229, 37);
 		contentPane.add(txtLogin);
 		txtLogin.setColumns(10);
 		
 		JLabel lblNewLabel1 = new JLabel("Login");
-		lblNewLabel1.setBounds(198, 78, 46, 14);
+		lblNewLabel1.setForeground(Color.WHITE);
+		lblNewLabel1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel1.setBounds(439, 164, 142, 37);
 		contentPane.add(lblNewLabel1);
 		
 		JLabel lblNewLabel_11 = new JLabel("Senha");
-		lblNewLabel_11.setBounds(198, 134, 46, 14);
+		lblNewLabel_11.setForeground(Color.WHITE);
+		lblNewLabel_11.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel_11.setBounds(430, 316, 151, 32);
 		contentPane.add(lblNewLabel_11);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(129, 166, 177, 20);
+		txtPassword.setBounds(352, 359, 230, 42);
 		contentPane.add(txtPassword);
 		
 		JLabel lblNewLabel_2 = new JLabel("LOGIN");
+		lblNewLabel_2.setForeground(Color.WHITE);
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 35));
-		lblNewLabel_2.setBounds(159, 14, 101, 53);
+		lblNewLabel_2.setBounds(415, 38, 101, 53);
 		contentPane.add(lblNewLabel_2);
 	}
 	

@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TelaCadastro extends JFrame {
 
@@ -47,21 +48,25 @@ public class TelaCadastro extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1125, 714);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(128, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Cadastro");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		lblNewLabel.setBounds(426, 11, 288, 68);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Informe seu login:");
+		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		lblNewLabel_1.setBounds(357, 113, 288, 58);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("Informe sua senha:");
+		lblNewLabel_2.setForeground(Color.WHITE);
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		lblNewLabel_2.setBounds(350, 261, 303, 51);
 		contentPane.add(lblNewLabel_2);

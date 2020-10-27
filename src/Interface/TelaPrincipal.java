@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TelaPrincipal extends JFrame {
 
@@ -44,6 +45,8 @@ public class TelaPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1076, 537);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(139, 0, 0));
+		contentPane.setForeground(new Color(139, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -51,7 +54,8 @@ public class TelaPrincipal extends JFrame {
 		JButton btnNewButton = new JButton("Sobre Desenvolvedores");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				new TelaSobreDesenvolvedores(movieList, user, tmdb).setVisible(true);
+				dispose();
 			}
 		});
 		btnNewButton.setBounds(111, 321, 184, 69);
@@ -81,7 +85,7 @@ public class TelaPrincipal extends JFrame {
 		JButton btnNewButton_2 = new JButton("Ver lista de Interesses, filmes assistidos");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new TelaAssistidosInteresses(user).setVisible(true);
+				new TelaAssistidosInteresses(user, movieList, tmdb).setVisible(true);
 				dispose();
 			}
 		});

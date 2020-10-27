@@ -17,6 +17,8 @@ import Dados.Tmdb;
 import Dados.Usuario;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridLayout;
 import javax.swing.JTextField;
 import java.awt.CardLayout;
@@ -27,11 +29,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class TelaPesquisa extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
+	private JButton btnNewButton_1;
 
 	/**
 	 * Launch the application.
@@ -48,22 +52,18 @@ public class TelaPesquisa extends JFrame {
 			}
 		});
 	}
-
-	/**
-	 * Create the frame.
-	 * @throws JSONException 
-	 * @throws IOException 
-	 * @throws JsonSyntaxException 
-	 */
+	
 	public TelaPesquisa(ListaFilmes movieList, Usuario user, Tmdb tmdb) throws JsonSyntaxException, IOException, JSONException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1100, 574);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(139, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Pesquisar Filme");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 35));
 		lblNewLabel.setBounds(377, 140, 239, 75);
 		contentPane.add(lblNewLabel);
@@ -86,17 +86,29 @@ public class TelaPesquisa extends JFrame {
 						}
 					}
 					try {
-						new TelaDadosFilme(filme, movieList, user).setVisible(true);
+						new TelaDadosFilme(filme, movieList, user, tmdb).setVisible(true);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					dispose();
+				}else {
+					JOptionPane.showMessageDialog(null,"Falha ao encontrar o filme" ,"Filme não encontrado!", JOptionPane.ERROR_MESSAGE);
 				}
 				
 			}
 		});
 		btnNewButton.setBounds(427, 302, 152, 39);
 		contentPane.add(btnNewButton);
+		
+		btnNewButton_1 = new JButton("Voltar");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new TelaPrincipal(movieList, user, tmdb).setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton_1.setBounds(37, 479, 89, 23);
+		contentPane.add(btnNewButton_1);
 	}
 }
